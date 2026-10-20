@@ -11,6 +11,8 @@
   <url>http://maven.apache.org</url>
 
   <properties>
+      <maven.compiler.source>27</maven.compiler.source>
+      <maven.compiler.target>27</maven.compiler.target>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
   </properties>
 
@@ -29,6 +31,13 @@
       <version>3.1.4</version>
     </dependency>
 
+    <!-- Desactivar mensajes de advertencia de SLF4J en la consola -->
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>slf4j-nop</artifactId>
+      <version>2.0.9</version>
+    </dependency>
+
     <!-- Librería Google Gson para exportar JSON -->
     <dependency>
       <groupId>com.google.code.gson</groupId>
@@ -36,4 +45,7 @@
       <version>2.10.1</version>
     </dependency>
   </dependencies>
+
+
+
 </project>

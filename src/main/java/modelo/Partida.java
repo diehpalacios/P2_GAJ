@@ -17,7 +17,7 @@ public class Partida {
 
     public Partida(int id, int idJuego, String nombreJuego,
                    Date fecha, Time hora, int jugadoresDeseados, int plazasLibres,
-                   String ganadoras, List<String> jugadorasInscritas) {
+                   String ganadoras) {
         this.id = id;
         this.idJuego = idJuego;
         this.nombreJuego = nombreJuego;
@@ -26,7 +26,6 @@ public class Partida {
         this.jugadoresDeseados = jugadoresDeseados;
         this.plazasLibres = plazasLibres;
         this.ganadoras = ganadoras;
-        this.jugadorasInscritas = jugadorasInscritas;
     }
 
     // Getters & Setters
