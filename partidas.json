@@ -1,0 +1,16 @@
+[
+  {
+    "id": 1,
+    "idJuego": 1,
+    "nombreJuego": "Catan",
+    "fecha": "nov 1, 2026",
+    "hora": "06:00:00 p. m.",
+    "jugadoresDeseados": 4,
+    "plazasLibres": 2,
+    "ganadoras": "Sin finalizar",
+    "jugadorasInscritas": [
+      "Amaia",
+      "Mikel"
+    ]
+  }
+]

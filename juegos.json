@@ -1,0 +1,33 @@
+[
+  {
+    "id": 1,
+    "nombre": "Catan",
+    "autores": "Klaus Teuber",
+    "descripcion": "Juego de negociación y estrategia",
+    "minJugadores": 3,
+    "maxJugadores": 4,
+    "duracionEstimada": 75,
+    "tematica": "Estrategia",
+    "tipo": "competitivo",
+    "ubicacion": "Estantería A1",
+    "estado": "disponible",
+    "propietarioTipo": "asociacion",
+    "fechaAlta": "ene 10, 2020"
+  },
+  {
+    "id": 2,
+    "nombre": "Gloomhaven",
+    "autores": "Isaac Childres",
+    "descripcion": "Juego de mazmorreo cooperativo",
+    "minJugadores": 1,
+    "maxJugadores": 4,
+    "duracionEstimada": 120,
+    "tematica": "Fantasía",
+    "tipo": "cooperativo",
+    "ubicacion": "Estantería B2",
+    "estado": "disponible",
+    "propietarioTipo": "socia",
+    "propietarioDni": "12345678A",
+    "fechaAlta": "mar 20, 2022"
+  }
+]

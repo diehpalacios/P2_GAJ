@@ -65,5 +65,14 @@ public class JuegoDAO {
         }
     }
 
+    public void actualizarEstadoJuego(int id, String nuevoEstado) throws SQLException {
+        String sql = "UPDATE juego SET estado = ? WHERE id = ? AND activo = TRUE";
+        try (Connection con = ConexionBBDD.getConexion();
+             PreparedStatement ps = con.prepareStatement(sql)) {
+            ps.setString(1, nuevoEstado);
+            ps.setInt(2, id);
+            ps.executeUpdate();
+        }
+    }
 
 }

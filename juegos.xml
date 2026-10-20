@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<juegos>
+    <juego id="1">
+        <nombre>Catan</nombre>
+        <autores>Klaus Teuber</autores>
+        <tematica>Estrategia</tematica>
+    </juego>
+    <juego id="2">
+        <nombre>Gloomhaven</nombre>
+        <autores>Isaac Childres</autores>
+        <tematica>Fantasía</tematica>
+    </juego>
+</juegos>

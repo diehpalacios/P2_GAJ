@@ -1,0 +1,18 @@
+[
+  {
+    "dni": "12345678A",
+    "nombre": "Amaia",
+    "apellidos": "Etxebarria Goikoetxea",
+    "telefono": "600111222",
+    "edad": 29,
+    "email": "amaia.etxeba@email.com"
+  },
+  {
+    "dni": "87654321B",
+    "nombre": "Mikel",
+    "apellidos": "Gomez Ruiz",
+    "telefono": "655333444",
+    "edad": 35,
+    "email": "mikel.gomez@email.com"
+  }
+]

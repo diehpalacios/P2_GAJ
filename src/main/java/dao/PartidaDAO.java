@@ -79,4 +79,39 @@ public class PartidaDAO {
         }
     }
 
+    // CREATE: Crear nueva partida
+    public void crearPartida(int idJuego, java.sql.Date fecha, java.sql.Time hora, int jugadoresDeseados) throws SQLException {
+        String sql = "INSERT INTO partida (id_juego, fecha, hora, jugadores_deseados, plazas_libres, activa) VALUES (?, ?, ?, ?, ?, TRUE)";
+        try (Connection con = ConexionBBDD.getConexion();
+             PreparedStatement ps = con.prepareStatement(sql)) {
+            ps.setInt(1, idJuego);
+            ps.setDate(2, fecha);
+            ps.setTime(3, hora);
+            ps.setInt(4, jugadoresDeseados);
+            ps.setInt(5, jugadoresDeseados); // Al crearse, todas las plazas están libres
+            ps.executeUpdate();
+        }
+    }
+
+    // UPDATE: Registrar resultado o ganadoras
+    public void registrarGanadoras(int idPartida, String ganadoras) throws SQLException {
+        String sql = "UPDATE partida SET ganadoras = ? WHERE id = ? AND activa = TRUE";
+        try (Connection con = ConexionBBDD.getConexion();
+             PreparedStatement ps = con.prepareStatement(sql)) {
+            ps.setString(1, ganadoras);
+            ps.setInt(2, idPartida);
+            ps.executeUpdate();
+        }
+    }
+
+    // DELETE: Borrado lógico / Cancelación de partida
+    public void cancelarPartida(int idPartida) throws SQLException {
+        String sql = "UPDATE partida SET activa = FALSE WHERE id = ?";
+        try (Connection con = ConexionBBDD.getConexion();
+             PreparedStatement ps = con.prepareStatement(sql)) {
+            ps.setInt(1, idPartida);
+            ps.executeUpdate();
+        }
+    }
+
 }

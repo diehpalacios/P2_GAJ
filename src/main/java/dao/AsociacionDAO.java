@@ -9,7 +9,7 @@ import java.sql.Statement;
 
 public class AsociacionDAO {
 
-    public Asociacion obtenerDatosAsociacion() throws Exception {
+    public static Asociacion obtenerDatosAsociacion() throws Exception {
         String sql = "SELECT cif, nombre, razon_social, direccion, telefono, email, fecha_apertura FROM asociacion LIMIT 1";
         Asociacion asociacion = null;
 
