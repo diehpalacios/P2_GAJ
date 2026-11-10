@@ -10,4 +10,9 @@
         <autores>Isaac Childres</autores>
         <tematica>Fantasía</tematica>
     </juego>
+    <juego id="3">
+        <nombre>Monopoly</nombre>
+        <autores>Charles Darrow</autores>
+        <tematica>Estrategia</tematica>
+    </juego>
 </juegos>

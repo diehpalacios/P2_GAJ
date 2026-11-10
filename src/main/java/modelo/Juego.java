@@ -1,5 +1,7 @@
 package modelo;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Date;
 
 public class Juego {
@@ -55,8 +57,17 @@ public class Juego {
 
     @Override
     public String toString() {
-        return String.format("[%d] %s | Autores: %s | Jugadores: %d-%d | Temp: %d min | Tema: %s | Estado: %s | Prop: %s (%s)",
-                id, nombre, autores, minJugadores, maxJugadores, duracionEstimada, tematica, estado, propietarioTipo,
-                propietarioDni != null ? propietarioDni : "Asociación");
+        return "ID: " + id +
+                " | Nombre: " + nombre +
+                " | Autores: " + autores +
+                " | Descripción: " + (descripcion != null ? descripcion : "N/A") +
+                " | Jugadores: " + minJugadores + "-" + maxJugadores +
+                " | Duración: " + duracionEstimada + " min" +
+                " | Temática: " + tematica +
+                " | Tipo: " + tipo +
+                " | Ubicación: " + ubicacion +
+                " | Estado: " + estado +
+                " | Propietario: " + propietarioTipo + (propietarioDni != null && !propietarioDni.trim().isEmpty() ? " (DNI: " + propietarioDni + ")" : "") +
+                " | Fecha de Alta: " + fechaAlta;
     }
 }

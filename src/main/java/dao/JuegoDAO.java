@@ -29,8 +29,8 @@ public class JuegoDAO {
     }
 
     public void insertarJuego(Juego j) throws SQLException {
-        String sql = "INSERT INTO juego (nombre, autores, descripcion, min_jugadores, max_jugadores, duracion_estimada, tematica, tipo, ubicacion, estado, propietario_tipo, propietario_dni, fecha_alta) " +
-                "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+        String sql = "INSERT INTO juego (nombre, autores, descripcion, min_jugadores, max_jugadores, duracion_estimada, tematica, tipo, ubicacion, estado, propietario_tipo, propietario_dni, fecha_alta, activo) " +
+                "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, TRUE)";
         try (Connection con = ConexionBBDD.getConexion();
              PreparedStatement ps = con.prepareStatement(sql)) {
 
@@ -50,7 +50,11 @@ public class JuegoDAO {
             } else {
                 ps.setNull(12, Types.VARCHAR);
             }
-            ps.setDate(13, (Date) j.getFechaAlta());
+            if (j.getFechaAlta() != null) {
+                ps.setDate(13, new Date(j.getFechaAlta().getTime()));
+            } else {
+                ps.setDate(13, new Date(System.currentTimeMillis()));
+            }
 
             ps.executeUpdate();
         }
@@ -65,12 +69,33 @@ public class JuegoDAO {
         }
     }
 
-    public void actualizarEstadoJuego(int id, String nuevoEstado) throws SQLException {
-        String sql = "UPDATE juego SET estado = ? WHERE id = ? AND activo = TRUE";
+    public void editarJuego(Juego j) throws SQLException {
+        String sql = "UPDATE juego SET nombre = ?, autores = ?, descripcion = ?, min_jugadores = ?, max_jugadores = ?, " +
+                "duracion_estimada = ?, tematica = ?, tipo = ?, ubicacion = ?, estado = ?, propietario_tipo = ?, " +
+                "propietario_dni = ? WHERE id = ? AND activo = TRUE";
+
         try (Connection con = ConexionBBDD.getConexion();
              PreparedStatement ps = con.prepareStatement(sql)) {
-            ps.setString(1, nuevoEstado);
-            ps.setInt(2, id);
+
+            ps.setString(1, j.getNombre());
+            ps.setString(2, j.getAutores());
+            ps.setString(3, j.getDescripcion());
+            ps.setInt(4, j.getMinJugadores());
+            ps.setInt(5, j.getMaxJugadores());
+            ps.setInt(6, j.getDuracionEstimada());
+            ps.setString(7, j.getTematica());
+            ps.setString(8, j.getTipo());
+            ps.setString(9, j.getUbicacion());
+            ps.setString(10, j.getEstado());
+            ps.setString(11, j.getPropietarioTipo());
+
+            if (j.getPropietarioDni() != null && !j.getPropietarioDni().trim().isEmpty()) {
+                ps.setString(12, j.getPropietarioDni());
+            } else {
+                ps.setNull(12, Types.VARCHAR);
+            }
+
+            ps.setInt(13, j.getId());
             ps.executeUpdate();
         }
     }

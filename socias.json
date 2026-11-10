@@ -8,6 +8,14 @@
     "email": "amaia.etxeba@email.com"
   },
   {
+    "dni": "33344455A",
+    "nombre": "Marcos",
+    "apellidos": "Ruiz",
+    "telefono": "650610620",
+    "edad": 22,
+    "email": "mruiz@gmail.com"
+  },
+  {
     "dni": "87654321B",
     "nombre": "Mikel",
     "apellidos": "Gomez Ruiz",

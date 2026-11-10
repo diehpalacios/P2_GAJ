@@ -82,14 +82,13 @@ public class Asociacion {
 
     @Override
     public String toString() {
-        return "Asociacion{" +
-                "cif='" + cif + '\'' +
-                ", nombre='" + nombre + '\'' +
-                ", razonSocial='" + razonSocial + '\'' +
-                ", direccion='" + direccion + '\'' +
-                ", telefono='" + telefono + '\'' +
-                ", email='" + email + '\'' +
-                ", fechaApertura=" + fechaApertura +
-                '}';
+        return "Cif: " + cif +
+                " | Nombre: " + nombre +
+                " | Razon Social: " + razonSocial +
+                " | Direccion: " + direccion +
+                " | Telefono: " + telefono +
+                " | Email: " + email +
+                " | Fecha Apertura: " + fechaApertura;
+
     }
 }

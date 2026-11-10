@@ -3,13 +3,13 @@
     "id": 1,
     "nombre": "Catan",
     "autores": "Klaus Teuber",
-    "descripcion": "Juego de negociación y estrategia",
+    "descripcion": "Juego de estrategia",
     "minJugadores": 3,
     "maxJugadores": 4,
     "duracionEstimada": 75,
     "tematica": "Estrategia",
     "tipo": "competitivo",
-    "ubicacion": "Estantería A1",
+    "ubicacion": "vi",
     "estado": "disponible",
     "propietarioTipo": "asociacion",
     "fechaAlta": "ene 10, 2020"
@@ -29,5 +29,20 @@
     "propietarioTipo": "socia",
     "propietarioDni": "12345678A",
     "fechaAlta": "mar 20, 2022"
+  },
+  {
+    "id": 3,
+    "nombre": "Monopoly",
+    "autores": "Charles Darrow",
+    "descripcion": "Juego de compraventa de bienes raices",
+    "minJugadores": 3,
+    "maxJugadores": 8,
+    "duracionEstimada": 99,
+    "tematica": "Estrategia",
+    "tipo": "competitivo",
+    "ubicacion": "vi",
+    "estado": "disponible",
+    "propietarioTipo": "asociacion",
+    "fechaAlta": "nov 10, 2026"
   }
 ]

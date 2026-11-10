@@ -50,13 +50,19 @@ public class SociaDAO {
         }
     }
 
-    public void actualizarSocia(String dni, String telefono, String email) throws SQLException {
-        String sql = "UPDATE socia SET telefono = ?, email = ? WHERE dni = ? AND activa = TRUE";
+    public void editarSocia(Socia s) throws SQLException {
+        String sql = "UPDATE socia SET nombre = ?, apellidos = ?, telefono = ?, edad = ?, email = ? WHERE dni = ? AND activa = TRUE";
+
         try (Connection con = ConexionBBDD.getConexion();
              PreparedStatement ps = con.prepareStatement(sql)) {
-            ps.setString(1, telefono);
-            ps.setString(2, email);
-            ps.setString(3, dni);
+
+            ps.setString(1, s.getNombre());
+            ps.setString(2, s.getApellidos());
+            ps.setString(3, s.getTelefono());
+            ps.setInt(4, s.getEdad());
+            ps.setString(5, s.getEmail());
+            ps.setString(6, s.getDni());
+
             ps.executeUpdate();
         }
     }

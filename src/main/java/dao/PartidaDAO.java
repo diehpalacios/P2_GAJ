@@ -11,19 +11,28 @@ public class PartidaDAO {
 
     public List<Partida> listarPartidas() throws SQLException {
         List<Partida> lista = new ArrayList<>();
-        String sql = "SELECT p.*, j.nombre AS nombre_juego FROM partida p JOIN juego j ON p.id_juego = j.id WHERE p.activa = TRUE";
+        String sql = "SELECT p.id AS partida_id, p.id_juego, p.fecha, p.hora, p.jugadores_deseados, " +
+                "p.plazas_libres, p.ganadoras, j.nombre AS nombre_juego " +
+                "FROM partida p JOIN juego j ON p.id_juego = j.id " +
+                "WHERE p.activa = TRUE";
 
         try (Connection con = ConexionBBDD.getConexion();
              PreparedStatement ps = con.prepareStatement(sql);
              ResultSet rs = ps.executeQuery()) {
 
             while (rs.next()) {
+                int idPartida = rs.getInt("partida_id");
                 Partida partida = new Partida(
-                        rs.getInt("id"), rs.getInt("id_juego"), rs.getString("nombre_juego"),
-                        rs.getDate("fecha"), rs.getTime("hora"), rs.getInt("jugadores_deseados"),
-                        rs.getInt("plazas_libres"), rs.getString("ganadoras")
+                        idPartida,
+                        rs.getInt("id_juego"),
+                        rs.getString("nombre_juego"),
+                        rs.getDate("fecha"),
+                        rs.getTime("hora"),
+                        rs.getInt("jugadores_deseados"),
+                        rs.getInt("plazas_libres"),
+                        rs.getString("ganadoras")
                 );
-                partida.setJugadorasInscritas(obtenerJugadorasPartida(partida.getId()));
+                partida.setJugadorasInscritas(obtenerJugadorasPartida(idPartida));
                 lista.add(partida);
             }
         }
@@ -32,52 +41,73 @@ public class PartidaDAO {
 
     private List<String> obtenerJugadorasPartida(int idPartida) throws SQLException {
         List<String> jugadoras = new ArrayList<>();
-        String sql = "SELECT COALESCE(s.nombre, pj.nombre_invitada) AS jugadora FROM partida_jugadora pj LEFT JOIN socia s ON pj.dni_socia = s.dni WHERE pj.id_partida = ?";
+        String sql = "SELECT COALESCE(CONCAT(s.nombre, ' ', s.apellidos), pj.nombre_invitada, pj.dni_socia) AS jugadora " +
+                "FROM partida_jugadora pj " +
+                "LEFT JOIN socia s ON UPPER(TRIM(pj.dni_socia)) = UPPER(TRIM(s.dni)) " +
+                "WHERE pj.id_partida = ?";
 
         try (Connection con = ConexionBBDD.getConexion();
              PreparedStatement ps = con.prepareStatement(sql)) {
             ps.setInt(1, idPartida);
             try (ResultSet rs = ps.executeQuery()) {
-                while (rs.next()) jugadoras.add(rs.getString("jugadora"));
+                while (rs.next()) {
+                    String nombre = rs.getString("jugadora");
+                    if (nombre != null) {
+                        jugadoras.add(nombre);
+                    }
+                }
+
             }
         }
         return jugadoras;
     }
 
     public void inscribirSociaEnPartida(int idPartida, String dniSocia) throws SQLException {
-        String sqlCheck = "SELECT plazas_libres FROM partida WHERE id = ?";
+        String sqlCheck = "SELECT plazas_libres FROM partida WHERE id = ? AND activa = TRUE";
         String sqlInscribir = "INSERT INTO partida_jugadora (id_partida, dni_socia) VALUES (?, ?)";
         String sqlUpdatePlazas = "UPDATE partida SET plazas_libres = plazas_libres - 1 WHERE id = ?";
 
+        String dniLimpio = dniSocia.trim();
+
         try (Connection con = ConexionBBDD.getConexion()) {
-            con.setAutoCommit(false); // Transacción manual
+            try {
+                con.setAutoCommit(false); // Iniciar transacción manual
 
-            try (PreparedStatement psCheck = con.prepareStatement(sqlCheck)) {
-                psCheck.setInt(1, idPartida);
-                ResultSet rs = psCheck.executeQuery();
-                if (rs.next() && rs.getInt("plazas_libres") <= 0) {
-                    con.rollback();
-                    throw new SQLException("No quedan plazas libres en esta partida.");
+                // 1. Verificar disponibilidad de plazas
+                try (PreparedStatement psCheck = con.prepareStatement(sqlCheck)) {
+                    psCheck.setInt(1, idPartida);
+                    ResultSet rs = psCheck.executeQuery();
+                    if (!rs.next()) {
+                        throw new SQLException("La partida ID " + idPartida + " no existe o no está activa.");
+                    }
+                    if (rs.getInt("plazas_libres") <= 0) {
+                        throw new SQLException("No quedan plazas libres en esta partida.");
+                    }
                 }
-            }
 
-            try (PreparedStatement psIns = con.prepareStatement(sqlInscribir);
-                 PreparedStatement psUpd = con.prepareStatement(sqlUpdatePlazas)) {
+                // 2. Insertar registro en tabla intermedia
+                try (PreparedStatement psIns = con.prepareStatement(sqlInscribir)) {
+                    psIns.setInt(1, idPartida);
+                    psIns.setString(2, dniLimpio);
+                    psIns.executeUpdate();
+                }
 
-                psIns.setInt(1, idPartida);
-                psIns.setString(2, dniSocia);
-                psIns.executeUpdate();
+                // 3. Descontar vacante
+                try (PreparedStatement psUpd = con.prepareStatement(sqlUpdatePlazas)) {
+                    psUpd.setInt(1, idPartida);
+                    psUpd.executeUpdate();
+                }
 
-                psUpd.setInt(1, idPartida);
-                psUpd.executeUpdate();
-
-                con.commit();
+                con.commit(); // Confirmar cambios
             } catch (SQLException e) {
-                con.rollback();
+                con.rollback(); // Revertir en caso de fallo
                 throw e;
+            } finally {
+                con.setAutoCommit(true); // Restablecer modo normal
             }
         }
     }
+
 
     // CREATE: Crear nueva partida
     public void crearPartida(int idJuego, java.sql.Date fecha, java.sql.Time hora, int jugadoresDeseados) throws SQLException {
@@ -93,23 +123,28 @@ public class PartidaDAO {
         }
     }
 
-    // UPDATE: Registrar resultado o ganadoras
-    public void registrarGanadoras(int idPartida, String ganadoras) throws SQLException {
-        String sql = "UPDATE partida SET ganadoras = ? WHERE id = ? AND activa = TRUE";
-        try (Connection con = ConexionBBDD.getConexion();
-             PreparedStatement ps = con.prepareStatement(sql)) {
-            ps.setString(1, ganadoras);
-            ps.setInt(2, idPartida);
-            ps.executeUpdate();
-        }
-    }
-
     // DELETE: Borrado lógico / Cancelación de partida
     public void cancelarPartida(int idPartida) throws SQLException {
         String sql = "UPDATE partida SET activa = FALSE WHERE id = ?";
         try (Connection con = ConexionBBDD.getConexion();
              PreparedStatement ps = con.prepareStatement(sql)) {
             ps.setInt(1, idPartida);
+            ps.executeUpdate();
+        }
+    }
+
+    public void editarPartida(int id, java.sql.Date nuevaFecha, java.sql.Time nuevaHora, int nuevosJugadoresDeseados, String ganadoras) throws SQLException {
+        String sql = "UPDATE partida SET fecha = ?, hora = ?, jugadores_deseados = ?, ganadoras = ? WHERE id = ? AND activa = TRUE";
+
+        try (Connection con = ConexionBBDD.getConexion();
+             PreparedStatement ps = con.prepareStatement(sql)) {
+
+            ps.setDate(1, nuevaFecha);
+            ps.setTime(2, nuevaHora);
+            ps.setInt(3, nuevosJugadoresDeseados);
+            ps.setString(4, ganadoras);
+            ps.setInt(5, id);
+
             ps.executeUpdate();
         }
     }
